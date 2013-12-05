@@ -1,0 +1,10 @@
+michael_test:
+    resource: "@MichaelTestBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+michael_meta_form:
+    resource: "@MichaelMetaFormBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
