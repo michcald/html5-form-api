@@ -29,6 +29,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
+     * @Assert\NotBlank
      *
      * @FormElement(
      *      type = "text",
@@ -45,7 +46,7 @@ class Article
     /**
      * @var string
      *
-     * @ORM\Column(name="text", type="text")
+     * @ORM\Column(name="text", type="text", nullable=true)
      *
      * @FormElement(
      *      type = "textarea",
@@ -60,8 +61,8 @@ class Article
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime")
-     * @Assert\Date()
+     * @ORM\Column(name="date", type="datetime", nullable=false)
+     * @Assert\DateTime
      *
      * @FormElement(
      *      type = "datetime",
@@ -74,6 +75,7 @@ class Article
      * @var boolean
      *
      * @ORM\Column(name="published", type="boolean")
+     * @Assert\Type(type="bool")
      *
      * @FormElement(
      *      type = "trigger",
@@ -86,6 +88,8 @@ class Article
      * @var integer
      *
      * @ORM\Column(name="views", type="integer")
+     * @Assert\NotBlank
+     * @Assert\Type(type="integer")
      *
      * @FormElement(
      *      type = "integer",
@@ -102,6 +106,7 @@ class Article
      * @var float
      *
      * @ORM\Column(name="price", type="float", nullable=true)
+     * @Assert\Type(type="double")
      *
      * @FormElement(
      *      type = "money",
@@ -116,6 +121,8 @@ class Article
     public function __construct()
     {
         $this->date = new \DateTime('now');
+        $this->views = 0;
+        $this->published = false;
     }
 
     /**
@@ -182,7 +189,9 @@ class Article
      */
     public function setDate($date)
     {
-        $this->date = $date;
+        if ($date !== null) {
+            $this->date = new \DateTime($date);
+        }
 
         return $this;
     }
@@ -228,7 +237,7 @@ class Article
      */
     public function setViews($views)
     {
-        $this->views = $views;
+        $this->views = (int)$views;
 
         return $this;
     }

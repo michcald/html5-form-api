@@ -1,0 +1,1 @@
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"article":{"title":"foo"}}' http://html5-form-api.local/app_dev.php/articles
