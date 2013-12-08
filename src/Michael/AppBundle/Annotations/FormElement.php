@@ -3,7 +3,7 @@
 namespace Michael\AppBundle\Annotations;
 
 /**
- *@Annotation
+ * @Annotation
  */
 class FormElement
 {
@@ -13,9 +13,7 @@ class FormElement
 
 	public $label;
 
-	public $value;
+	public $required;
 
-	public $placeholder;
-
-	public $options;
+	public $attributes;
 }

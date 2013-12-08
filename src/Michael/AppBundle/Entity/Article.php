@@ -33,9 +33,8 @@ class Article
      * @FormElement(
      *      type = "text",
      *      label = "Title",
-     *      value = "",
-     *      placeholder = "Insert here",
-     *      options = {
+     *      required = true,
+     *      attributes = {
      *          "max-length" = "10",
      *          "min-length" = "2"
      *      }
@@ -51,8 +50,7 @@ class Article
      * @FormElement(
      *      type = "textarea",
      *      label = "Text",
-     *      value = "",
-     *      options = {
+     *      attributes = {
      *          "max-length" = "10"
      *      }
      * )
@@ -67,8 +65,7 @@ class Article
      *
      * @FormElement(
      *      type = "datetime",
-     *      label = "Date",
-     *      value = ""
+     *      label = "Date"
      * )
      */
     private $date;
@@ -80,8 +77,7 @@ class Article
      *
      * @FormElement(
      *      type = "trigger",
-     *      label = "Is published",
-     *      value = "false"
+     *      label = "Is published"
      * )
      */
     private $published;
@@ -94,8 +90,7 @@ class Article
      * @FormElement(
      *      type = "integer",
      *      label = "Views",
-     *      value = "0",
-     *      options = {
+     *      attributes = {
      *          "max" = "1000",
      *          "min" = "0"
      *      }
@@ -111,7 +106,7 @@ class Article
      * @FormElement(
      *      type = "money",
      *      label = "Insert the price",
-     *      options = {
+     *      attributes = {
      *          "min" = "0"
      *      }
      * )
