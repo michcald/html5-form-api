@@ -32,13 +32,14 @@ class AnnotationReader
 	{
 		$reflectionClass = new \ReflectionClass($class);
 		$properties = $reflectionClass->getProperties();
-
+		
 		$results = array();
 		foreach ($properties as $property) {
 			$temp = $this->annotationReader->getPropertyAnnotations($property);
 
 			foreach ($temp as $t) {
-				if ($t instanceof \Michael\MetaFormBundle\Annotation\FormElement) {
+				if ($t instanceof \Michael\AppBundle\Annotations\FormElement) {
+					$t->name = $property->getName();
 					$results[] = $t;
 				}
 			}

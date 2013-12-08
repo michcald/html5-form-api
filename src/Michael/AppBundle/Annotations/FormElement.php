@@ -7,6 +7,8 @@ namespace Michael\AppBundle\Annotations;
  */
 class FormElement
 {
+	public $name;
+	
 	public $type;
 
 	public $label;

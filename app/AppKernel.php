@@ -22,7 +22,7 @@ class AppKernel extends Kernel
             new FOS\RestBundle\FOSRestBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle($this),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new Propel\PropelBundle\PropelBundle(),
+            //new Propel\PropelBundle\PropelBundle(),
             // My app
             new Michael\AppBundle\MichaelAppBundle(),
         );

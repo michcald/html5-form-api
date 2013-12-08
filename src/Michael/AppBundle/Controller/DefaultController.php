@@ -4,31 +4,57 @@ namespace Michael\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class DefaultController extends Controller
+// required for REST
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\FOSRestController;
+
+class DefaultController extends FOSRestController
 {
     /**
-     * @Route("/hello/{name}")
-     * @Template()
+     * @Route(
+     *      "/articles",
+     *      name = "app.route.default.get.index",
+     *      defaults = {
+     *          "_format" = "json"
+     *      },
+     *      requirements = {
+     *          "_method" = "GET"
+     *      })
+     * @Rest\View
      */
-    public function indexAction($name)
+    public function indexAction()
     {
-        return array('name' => $name);
+        $em = $this->getDoctrine()->getManager();
+
+        $art = new \Michael\AppBundle\Entity\Article();
+
+        $art->setTitle("ciao");
+
+        return $art;
     }
 
-    public function ciao()
+    /**
+     * @Route(
+     *      "/articles/meta",
+     *      name = "app.route.default.get.meta",
+     *      defaults = {
+     *          "_format" = "json"
+     *      },
+     *      requirements = {
+     *          "_method" = "GET"
+     *      })
+     * @Rest\View
+     */
+    public function metaAction()
     {
-    	$ann = new \Michael\MetaFormBundle\Annotations\AnnotationReader();
+    	$ann = new \Michael\AppBundle\Annotations\AnnotationReader();
 
-    	$class = 'Michael\TestBundle\Entity\Article';
-    	$property = 'title';
+    	$class = 'Michael\AppBundle\Entity\Article';
 		$annotations = $ann->getPropertiesAnnotations($class);
 
-		echo '<pre>'.print_r($annotations, true).'</pre>';
-
-    	
-    	die();
-        return array('name' => $name);
+        return $annotations;
     }
 }

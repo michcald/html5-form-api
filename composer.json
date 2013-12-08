@@ -22,7 +22,6 @@
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "jms/serializer-bundle": "0.13.*@dev",
-        "propel/propel-bundle": "1.2.*@dev",
         "nelmio/api-doc-bundle": "dev-master"
     },
     "scripts": {
