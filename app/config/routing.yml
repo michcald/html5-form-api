@@ -1,10 +1,9 @@
-michael_test:
-    resource: "@MichaelTestBundle/Controller/"
+michael_app:
+    resource: "@MichaelAppBundle/Controller/"
     type:     annotation
     prefix:   /
 
-michael_meta_form:
-    resource: "@MichaelMetaFormBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
+# REST DOC
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc

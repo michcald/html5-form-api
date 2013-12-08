@@ -1,6 +1,6 @@
 <?php
 
-namespace Michael\MetaFormBundle\Annotations;
+namespace Michael\AppBundle\Annotations;
 
 use Doctrine\Common\Annotations\AnnotationReader as DoctrineAnnotationReader;
 

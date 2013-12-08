@@ -1,6 +1,6 @@
 <?php
 
-namespace Michael\MetaFormBundle\Tests\Controller;
+namespace Michael\AppBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

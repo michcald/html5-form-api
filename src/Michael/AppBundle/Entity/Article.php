@@ -1,15 +1,15 @@
 <?php
 
-namespace Michael\TestBundle\Entity;
+namespace Michael\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Michael\MetaFormBundle\Annotation\FormElement;
+use Michael\AppBundle\Annotations\FormElement;
 
 /**
  * Article
  *
- * @ORM\Table()
+ * @ORM\Table(name="article")
  * @ORM\Entity
  */
 class Article

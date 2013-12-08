@@ -1,20 +1,23 @@
 <?php
 
-namespace Michael\MetaFormBundle\Controller;
+namespace Michael\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-
-
 class DefaultController extends Controller
 {
     /**
-     * @Route("/cacca/{name}")
+     * @Route("/hello/{name}")
      * @Template()
      */
     public function indexAction($name)
+    {
+        return array('name' => $name);
+    }
+
+    public function ciao()
     {
     	$ann = new \Michael\MetaFormBundle\Annotations\AnnotationReader();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Michael\MetaFormBundle\Annotation;
+namespace Michael\AppBundle\Annotations;
 
 /**
  *@Annotation
