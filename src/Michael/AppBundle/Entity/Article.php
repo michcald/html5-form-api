@@ -4,6 +4,8 @@ namespace Michael\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Michael\AppBundle\Annotations\FormElement;
 
 /**
@@ -61,6 +63,7 @@ class Article
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\Date()
      *
      * @FormElement(
      *      type = "datetime",
@@ -103,7 +106,7 @@ class Article
     /**
      * @var float
      *
-     * @ORM\Column(name="price", type="float")
+     * @ORM\Column(name="price", type="float", nullable=true)
      *
      * @FormElement(
      *      type = "money",
@@ -115,6 +118,10 @@ class Article
      */
     private $price;
 
+    public function __construct()
+    {
+        $this->date = new \DateTime('now');
+    }
 
     /**
      * Get id

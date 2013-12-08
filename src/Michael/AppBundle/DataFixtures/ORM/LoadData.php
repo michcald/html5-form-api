@@ -12,6 +12,39 @@ class LoadData implements FixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        
+    	foreach ($this->getData() as $data) {
+    		$article = new \Michael\AppBundle\Entity\Article();
+    		$article->setTitle($data['title'])
+    			->setText($data['text'])
+    			->setPublished($data['published'])
+    			->setViews($data['views']);
+    		$manager->persist($article);
+    	}
+
+    	$manager->flush();
+    }
+
+    private function getData()
+    {
+    	return array(
+    		array(
+    			'title' => 'Title1',
+    			'text' => 'This is the text',
+    			'published' => false,
+    			'views' => rand(0, 100),
+    		),
+    		array(
+    			'title' => 'Title2',
+    			'text' => 'This is the text',
+    			'published' => true,
+    			'views' => rand(0, 100),
+    		),
+    		array(
+    			'title' => 'Title3',
+    			'text' => 'This is the text',
+    			'published' => false,
+    			'views' => rand(0, 100),
+    		)
+    	);
     }
 }
