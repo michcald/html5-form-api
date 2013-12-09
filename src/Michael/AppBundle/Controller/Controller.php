@@ -60,7 +60,7 @@ abstract class Controller extends FOSRestController
 	// rename in create and create a new one called update
 	protected final function myProcessForm($form, $entity, $pathName)
     {
-        $statusCode = !$entity->getId() ? 201 : 204;
+        $statusCode = $entity->getId() ? 204 : 201;
 
         $form = $this->createForm($form, $entity);
 
@@ -89,6 +89,8 @@ abstract class Controller extends FOSRestController
                         true // absolute
                     )
                 );
+
+                $response->setContent($entity->getId());
             }
 
             return $response;

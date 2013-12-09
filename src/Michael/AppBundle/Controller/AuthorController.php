@@ -213,4 +213,21 @@ class AuthorController extends Controller
 
         $em->flush();
     }
+
+    /**
+     * @Route(
+     *      "/authors/{id}",
+     *      name = "app.route.author.delete",
+     *      defaults = {
+     *          "_format" = "json"
+     *      },
+     *      requirements = {
+     *          "_method" = "DELETE"
+     *      })
+     * @Rest\View(statusCode=204)
+     */
+    public function deleteAction($id)
+    {
+        return parent::delete($id);
+    }
 }
