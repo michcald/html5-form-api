@@ -8,13 +8,9 @@
     <parameters>
         <parameter key="michael_app.example.class">Michael\AppBundle\Example</parameter>
     </parameters>
-
     <services>
-        <service id="michael_app.example" class="%michael_app.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
-        </service>
+        
     </services>
     -->
+
 </container>

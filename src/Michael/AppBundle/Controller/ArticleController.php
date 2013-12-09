@@ -2,27 +2,28 @@
 
 namespace Michael\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 // required for REST
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Response;
+
+use Michael\AppBundle\Controller\Controller;
 
 use Michael\AppBundle\Util\Paginator;
 
 use Michael\AppBundle\Entity\Article;
 use Michael\AppBundle\Form\Type\ArticleType;
 
-use Symfony\Component\Form\FormView;
+//use Symfony\Component\Form\FormView;
 
-class DefaultController extends FOSRestController
+class ArticleController extends Controller
 {
+    protected $repository = 'MichaelAppBundle:Article';
+
     /**
      * @Route(
      *      "/articles",
@@ -45,7 +46,7 @@ class DefaultController extends FOSRestController
 
         $paginator = new Paginator();
         $paginator
-            ->setTotalItemCount(count($repo->findAll()))
+            ->setTotalItemCount(parent::countAll())
             ->setCurrentPageNumber($page);
 
         $articles = $repo->findBy(
@@ -76,17 +77,7 @@ class DefaultController extends FOSRestController
      */
     public function getAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $repo = $em->getRepository('MichaelAppBundle:Article');
-
-        $article = $repo->find($id);
-
-        if (!$article instanceof Article) {
-            throw new NotFoundHttpException('Article not found');
-        }
-
-        return array('article' => $article);
+        return parent::read($id);
     }
 
     /**
@@ -103,7 +94,7 @@ class DefaultController extends FOSRestController
      */
     public function newAction()
     {
-        return $this->processForm(new Article);
+        return parent::myProcessForm(new ArticleType, new Article, 'app.route.default.get.get');
     }
 
     /**
@@ -129,7 +120,7 @@ class DefaultController extends FOSRestController
         if (!$article instanceof Article) {
             throw new NotFoundHttpException('Article not found');
         }
-        return $this->processForm($article);
+        return $this->myProcessForm(new ArticleType, $article, 'app.route.default.get.get');
     }
 
     /**
@@ -146,17 +137,7 @@ class DefaultController extends FOSRestController
      */
     public function deleteAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('MichaelAppBundle:Article');
-
-        $article = $repo->find($id);
-
-        if (!$article instanceof Article) {
-            throw new NotFoundHttpException('Article not found');
-        }
-
-        $em->remove($article);
-        $em->flush();
+        return parent::delete($id);
     }
 
     /**

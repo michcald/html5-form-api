@@ -118,6 +118,12 @@ class Article
      */
     private $price;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Author", inversedBy="articles")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     */
+    private $author;
+
     public function __construct()
     {
         $this->date = new \DateTime('now');
@@ -237,7 +243,11 @@ class Article
      */
     public function setViews($views)
     {
-        $this->views = (int)$views;
+        if (is_numeric($views)) {
+            $this->views = (int)$views;    
+        } else {
+            $this->views = $views;
+        }
 
         return $this;
     }
@@ -273,5 +283,17 @@ class Article
     public function getPrice()
     {
         return $this->price;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+
+        return $this;
     }
 }

@@ -12,7 +12,7 @@ class LoadData implements FixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-    	foreach ($this->getData() as $data) {
+    	foreach ($this->getArticles() as $data) {
     		$article = new \Michael\AppBundle\Entity\Article();
     		$article->setTitle($data['title'])
     			->setText($data['text'])
@@ -21,10 +21,31 @@ class LoadData implements FixtureInterface
     		$manager->persist($article);
     	}
 
+        foreach ($this->getAuthors() as $data) {
+            $author = new \Michael\AppBundle\Entity\Author();
+            $author->setFirstName($data['first_name'])
+                ->setLastName($data['last_name']);
+            $manager->persist($author);
+        }
+
     	$manager->flush();
     }
 
-    private function getData()
+    private function getAuthors()
+    {
+        return array(
+            array(
+                'first_name' => 'Michael',
+                'last_name' => 'Caldera'
+            ),
+            array(
+                'first_name' => 'Mario',
+                'last_name' => 'Rossi'
+            ),
+        );
+    }
+
+    private function getArticles()
     {
     	return array(
     		array(
