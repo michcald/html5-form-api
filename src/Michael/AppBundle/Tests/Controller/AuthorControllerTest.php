@@ -15,10 +15,8 @@ class AuthorControllerTest extends WebTestCase
         	'POST', 
         	'/authors',
         	array(
-        		'author' => array(
-        			'firstName' => 'Gino',
-	        		'lastName'  => 'Corioni'
-        		)
+        		'firstName' => 'Gino',
+	        	'lastName'  => 'Corioni'
         	)
         );
 
@@ -65,9 +63,7 @@ class AuthorControllerTest extends WebTestCase
         	'PUT', 
         	'/authors/' . $id,
         	array(
-        		'author' => array(
-        			'firstName' => 'Gino2'
-        		)
+        		'firstName' => 'Gino2'
         	)
         );
 

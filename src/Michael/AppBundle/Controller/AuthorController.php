@@ -34,12 +34,19 @@ class AuthorController extends Controller
      * annotation.
      *
      * @ApiDoc(
-     *  resource=true,
-     *  description="This is a description of your API method",
-     *  filters={
-     *      {"name"="a-filter", "dataType"="integer"},
-     *      {"name"="another-filter", "dataType"="string", "pattern"="(foo|bar) ASC|DESC"}
-     *  }
+     *      resource = true,
+     *      description = "Authors interface",
+     *      requirements = {
+     *          {
+     *              "name" = "page",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The page to retrieve"
+     *          }
+     *      },
+     *      filters = {
+     *          {"name"="order", "dataType"="string", "pattern"="(firstName|lastName) ASC|DESC"}
+     *      }
      * )
      *
      * @Route(
@@ -109,6 +116,15 @@ class AuthorController extends Controller
     }
 
     /**
+     * @ApiDoc(
+     *      statusCodes = {
+     *          200 = "Returned when successful",
+     *          404 = {
+     *              "Returned when the author is not found"
+     *          }
+     *      }
+     * )
+     *
      * @Route(
      *      "/authors/{id}",
      *      name = "app.route.author.get",
@@ -127,6 +143,17 @@ class AuthorController extends Controller
     }
 
     /**
+     * @ApiDoc(
+     *      description = "Create a new Object",
+     *      input = "Michael\AppBundle\Form\Type\AuthorType",
+     *      statusCodes = {
+     *          201 = "Returned when created",
+     *          400 = {
+     *              "Returned when the author is not found"
+     *          }
+     *      }
+     * )
+     *
      * @Route(
      *      "/authors",
      *      name = "app.route.author.create",
@@ -135,7 +162,9 @@ class AuthorController extends Controller
      *      },
      *      requirements = {
      *          "_method" = "POST"
-     *      })
+     *      }
+     * )
+     *
      * @Rest\View
      */
     public function createAction()

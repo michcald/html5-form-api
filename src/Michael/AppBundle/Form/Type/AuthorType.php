@@ -33,6 +33,6 @@ class AuthorType extends AbstractType
      */
     public function getName()
     {
-        return 'author';
+        return '';
     }
 }
