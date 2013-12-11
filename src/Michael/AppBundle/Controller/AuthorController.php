@@ -8,9 +8,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 // required for REST
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\FOSRestController;
 
 // for documentation
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+
+use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -24,10 +27,8 @@ use Michael\AppBundle\Form\Type\AuthorType;
 
 //use Symfony\Component\Form\FormView;
 
-class AuthorController extends Controller
+class AuthorController extends FOSRestController
 {
-	protected $repository = 'MichaelAppBundle:Author';
-
 	/**
      * This the documentation description of your method, it will appear
      * on a specific pane. It will read all the text until the first
@@ -60,17 +61,21 @@ class AuthorController extends Controller
      *      })
      * @Rest\View
      */
-    public function allAction()
+    public function getAllAction()
     {
         $page = (int)$this->getRequest()->query->get('page', 1);
 
-        $repo = $this->getDoctrine()
-            ->getManager()
-            ->getRepository($this->repository);
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('MichaelAppBundle:Author');
+
+        $query = $em->createQueryBuilder();
+        $query->select('count(t.id)');
+        $query->from('MichaelAppBundle:Author', 't');
+        $count = $query->getQuery()->getSingleScalarResult();
 
         $paginator = new Paginator();
         $paginator
-            ->setTotalItemCount(parent::countAll())
+            ->setTotalItemCount($count)
             ->setCurrentPageNumber($page);
 
         $authors = $repo->findBy(
@@ -83,35 +88,6 @@ class AuthorController extends Controller
         return array(
             'authors' => $authors,
             'paginator' => $paginator->toArray()
-        );
-    }
-
-    /**
-     * @Route(
-     *      "/authors/{id}/articles",
-     *      name = "app.route.author.articles",
-     *      defaults = {
-     *          "_format" = "json"
-     *      },
-     *      requirements = {
-     *          "_method" = "GET"
-     *      })
-     * @Rest\View
-     */
-    public function articlesAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $repo = $em->getRepository($this->repository);
-
-        $author = $repo->find($id);
-
-        if (!$author instanceof Author) {
-            throw new NotFoundHttpException('Author not found');
-        }
-
-        return array(
-            'articles' => $author->getArticles()
         );
     }
 
@@ -137,9 +113,19 @@ class AuthorController extends Controller
      *      })
      * @Rest\View
      */
-    public function getAction($id)
+    public function getOneAction($id)
     {
-        return parent::read($id);
+        $em = $this->getDoctrine()->getManager();
+
+        $repo = $em->getRepository('MichaelAppBundle:Author');
+
+        $entity = $repo->find($id);
+
+        if (!$entity) {
+            throw new NotFoundHttpException('Resource not found');
+        }
+
+        return array('author' => $entity);
     }
 
     /**
@@ -169,7 +155,39 @@ class AuthorController extends Controller
      */
     public function createAction()
     {
-        return parent::myProcessForm(new AuthorType(), new Author(), 'app.route.author.create');
+        $entity = new Author();
+
+        $form = $this->createForm(new AuthorType(), $entity);
+
+        $form->submit($this->getRequest(), $clearMissing = true);
+
+        if ($form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($entity);
+            
+            $em->flush();
+
+            $response = new Response();
+            $response->setStatusCode(201);
+
+            // set the `Location` header only when creating new resources
+            $response->headers->set(
+                'Location',
+                $this->generateUrl(
+                    'app.route.author.create', 
+                    array('id' => $entity->getId()),
+                    true // absolute
+                )
+            );
+
+            $response->setContent($entity->getId());
+
+            return $response;
+        }
+
+        return $this->view($form, 400);
     }
 
     /**
@@ -180,7 +198,8 @@ class AuthorController extends Controller
      *          "_format" = "json"
      *      },
      *      requirements = {
-     *          "_method" = "PUT"
+     *          "_method" = "PUT",
+     *          "id" = "\d+"
      *      })
      * @Rest\View
      */
@@ -188,14 +207,59 @@ class AuthorController extends Controller
     {
         $repo = $this->getDoctrine()
             ->getManager()
-            ->getRepository($this->repository);
+            ->getRepository('MichaelAppBundle:auhor');
+
+        $entity = $repo->find($id);
+
+        if (!$entity) {
+            throw new NotFoundHttpException('Author not found');
+        }
+
+        $form = $this->createForm(new AuthorType(), $entity);
+
+        $form->submit($this->getRequest(), $clearMissing = false);
+
+        if ($form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $response = new Response();
+            $response->setStatusCode(204);
+
+            return $response;
+        }
+
+        return $this->view($form, 400);
+    }
+
+    /**
+     * @Route(
+     *      "/authors/{id}/articles",
+     *      name = "app.route.author.articles",
+     *      defaults = {
+     *          "_format" = "json"
+     *      },
+     *      requirements = {
+     *          "_method" = "GET",
+     *          "id" = "\d+"
+     *      })
+     * @Rest\View
+     */
+    public function articlesAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $repo = $em->getRepository($this->repository);
 
         $author = $repo->find($id);
 
         if (!$author instanceof Author) {
             throw new NotFoundHttpException('Author not found');
         }
-        return $this->myProcessForm(new AuthorType, $author, 'app.route.author.update');
+
+        return array(
+            'articles' => $author->getArticles()
+        );
     }
 
     /**
@@ -206,7 +270,8 @@ class AuthorController extends Controller
      *          "_format" = "json"
      *      },
      *      requirements = {
-     *          "_method" = "LINK"
+     *          "_method" = "LINK",
+     *          "id" = "\d+"
      *      })
      * @Rest\View
      */
@@ -267,12 +332,24 @@ class AuthorController extends Controller
      *          "_format" = "json"
      *      },
      *      requirements = {
-     *          "_method" = "DELETE"
+     *          "_method" = "DELETE",
+     *          "id" = "\d+"
      *      })
      * @Rest\View(statusCode=204)
      */
     public function deleteAction($id)
     {
-        return parent::delete($id);
+        $repo = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('MichaelAppBundle:Author');
+
+        $entity = $repo->find($id);
+
+        if (!$entity) {
+            throw new NotFoundHttpException('Author not found');
+        }
+
+        $em->remove($entity);
+        $em->flush();
     }
 }

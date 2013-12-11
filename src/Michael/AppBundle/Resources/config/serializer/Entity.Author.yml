@@ -1,0 +1,11 @@
+Michael\AppBundle\Entity\Author:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+        firstName:
+            expose: true
+        lastName:
+            expose: true
+        articles:
+            expose: true

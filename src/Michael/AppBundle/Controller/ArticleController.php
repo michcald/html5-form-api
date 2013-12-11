@@ -20,10 +20,8 @@ use Michael\AppBundle\Form\Type\ArticleType;
 
 //use Symfony\Component\Form\FormView;
 
-class ArticleController extends Controller
+class ArticleController
 {
-    protected $repository = 'MichaelAppBundle:Article';
-
     /**
      * @Route(
      *      "/articles",
@@ -44,9 +42,14 @@ class ArticleController extends Controller
             ->getManager()
             ->getRepository('MichaelAppBundle:Article');
 
+        $query = $em->createQueryBuilder();
+        $query->select('count(t.id)');
+        $query->from('MichaelAppBundle:Article', 't');
+        $count = $query->getQuery()->getSingleScalarResult();
+
         $paginator = new Paginator();
         $paginator
-            ->setTotalItemCount(parent::countAll())
+            ->setTotalItemCount($count)
             ->setCurrentPageNumber($page);
 
         $articles = $repo->findBy(
@@ -77,7 +80,17 @@ class ArticleController extends Controller
      */
     public function getAction($id)
     {
-        return parent::read($id);
+        $em = $this->getDoctrine()->getManager();
+
+        $repo = $em->getRepository('MichaelAppBundle:Article');
+
+        $entity = $repo->find($id);
+
+        if (!$entity) {
+            throw new NotFoundHttpException('Article not found');
+        }
+
+        return array('article' => $entity);
     }
 
     /**
@@ -92,9 +105,41 @@ class ArticleController extends Controller
      *      })
      * @Rest\View
      */
-    public function newAction()
+    public function createAction()
     {
-        return parent::myProcessForm(new ArticleType, new Article, 'app.route.default.get.get');
+        $entity = new Article();
+
+        $form = $this->createForm(new ArticleType(), $entity);
+
+        $form->submit($this->getRequest(), $clearMissing = true);
+
+        if ($form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($entity);
+            
+            $em->flush();
+
+            $response = new Response();
+            $response->setStatusCode(201);
+
+            // set the `Location` header only when creating new resources
+            $response->headers->set(
+                'Location',
+                $this->generateUrl(
+                    'app.route.default.get.get', 
+                    array('id' => $entity->getId()),
+                    true // absolute
+                )
+            );
+
+            $response->setContent($entity->getId());
+
+            return $response;
+        }
+
+        return $this->view($form, 400);
     }
 
     /**
@@ -115,12 +160,27 @@ class ArticleController extends Controller
             ->getManager()
             ->getRepository('MichaelAppBundle:Article');
 
-        $article = $repo->find($id);
+        $entity = $repo->find($id);
 
-        if (!$article instanceof Article) {
+        if (!$entity) {
             throw new NotFoundHttpException('Article not found');
         }
-        return $this->myProcessForm(new ArticleType, $article, 'app.route.default.get.get');
+
+        $form = $this->createForm(new AuthorType(), $entity);
+
+        $form->submit($this->getRequest(), $clearMissing = false);
+
+        if ($form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $response = new Response();
+            $response->setStatusCode(204);
+
+            return $response;
+        }
+
+        return $this->view($form, 400);
     }
 
     /**
@@ -137,7 +197,18 @@ class ArticleController extends Controller
      */
     public function deleteAction($id)
     {
-        return parent::delete($id);
+        $repo = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('MichaelAppBundle:Article');
+
+        $entity = $repo->find($id);
+
+        if (!$entity) {
+            throw new NotFoundHttpException('Article not found');
+        }
+
+        $em->remove($entity);
+        $em->flush();
     }
 
     /**
@@ -160,42 +231,5 @@ class ArticleController extends Controller
 		$annotations = $ann->getPropertiesAnnotations($class);
 
         return $annotations;
-    }
-
-    private function processForm(Article $article)
-    {
-        $statusCode = !$article->getId() ? 201 : 204;
-
-        $form = $this->createForm(new ArticleType(), $article);
-
-        $form->bind($this->getRequest());
-
-        if ($form->isValid()) {
-
-            $em = $this->getDoctrine()->getManager();
-
-            if (!$article->getId()) {
-                $em->persist($article);
-            }
-            
-            $em->flush();
-
-            $response = new Response();
-            $response->setStatusCode($statusCode);
-
-            // set the `Location` header only when creating new resources
-            if (201 === $statusCode) {
-                $response->headers->set('Location',
-                    $this->generateUrl(
-                        'app.route.default.get.get', array('id' => $article->getId()),
-                        true // absolute
-                    )
-                );
-            }
-
-            return $response;
-        }
-
-        return $this->view($form, 400);
     }
 }
