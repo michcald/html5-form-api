@@ -76,6 +76,7 @@ class AuthorController extends FOSRestController
         $paginator = new Paginator();
         $paginator
             ->setTotalItemCount($count)
+            ->setItemCountPerPage(2)
             ->setCurrentPageNumber($page);
 
         $authors = $repo->findBy(
@@ -339,9 +340,9 @@ class AuthorController extends FOSRestController
      */
     public function deleteAction($id)
     {
-        $repo = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('MichaelAppBundle:Author');
+        $em = $this->getDoctrine()->getManager();
+
+        $repo = $em->getRepository('MichaelAppBundle:Author');
 
         $entity = $repo->find($id);
 

@@ -87,7 +87,7 @@ class Paginator
 	{
 		return array(
 			'item_count'      => $this->getTotalItemCount(),
-			'page_item_count' => $this->getItemCountPerPage(),
+			'page_item_count' => $this->getItemCountPerPage(), // to improve
 			'page_count'      => $this->getTotalPageNumber(),
 			'page'            => array(
 				'current' => $this->getCurrentPageNumber(),
