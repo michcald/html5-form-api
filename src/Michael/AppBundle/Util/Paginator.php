@@ -85,9 +85,14 @@ class Paginator
 
 	public function toArray()
 	{
+		$pageItemCount = $this->getItemCountPerPage();
+		if ($this->getCurrentPageNumber() == $this->getTotalPageNumber()) {
+			$pageItemCount = $pageItemCount - $this->getTotalItemCount() % $this->getItemCountPerPage();
+		}
+		
 		return array(
 			'item_count'      => $this->getTotalItemCount(),
-			'page_item_count' => $this->getItemCountPerPage(), // to improve
+			'page_item_count' => $pageItemCount,
 			'page_count'      => $this->getTotalPageNumber(),
 			'page'            => array(
 				'current' => $this->getCurrentPageNumber(),
