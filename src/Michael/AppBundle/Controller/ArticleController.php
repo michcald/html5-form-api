@@ -8,10 +8,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 // required for REST
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\FOSRestController;
+
+// for documentation
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+
+use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use Michael\AppBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use Michael\AppBundle\Util\Paginator;
 
@@ -20,7 +25,7 @@ use Michael\AppBundle\Form\Type\ArticleType;
 
 //use Symfony\Component\Form\FormView;
 
-class ArticleController
+class ArticleController extends FOSRestController
 {
     /**
      * @Route(
@@ -38,9 +43,8 @@ class ArticleController
     {
         $page = (int)$this->getRequest()->query->get('page', 1);
 
-        $repo = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('MichaelAppBundle:Article');
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('MichaelAppBundle:Article');
 
         $query = $em->createQueryBuilder();
         $query->select('count(t.id)');
@@ -231,5 +235,24 @@ class ArticleController
 		$annotations = $ann->getPropertiesAnnotations($class);
 
         return $annotations;
+    }
+
+    /**
+     * @Route(
+     *      "/articles/{id}",
+     *      name = "app.route.article.options",
+     *      defaults = {
+     *          "_format" = "json",
+     *          "id" = ""
+     *      },
+     *      requirements = {
+     *          "_method" = "OPTIONS",
+     *          "id" = "\d+"
+     *      })
+     * @Rest\View(statusCode=200)
+     */
+    public function optionsAction($id)
+    {
+        
     }
 }

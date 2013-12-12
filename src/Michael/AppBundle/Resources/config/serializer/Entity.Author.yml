@@ -8,4 +8,4 @@ Michael\AppBundle\Entity\Author:
         lastName:
             expose: true
         articles:
-            expose: true
+            expose: false

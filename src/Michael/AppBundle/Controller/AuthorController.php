@@ -18,14 +18,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-use Michael\AppBundle\Controller\Controller;
-
 use Michael\AppBundle\Util\Paginator;
 
 use Michael\AppBundle\Entity\Author;
 use Michael\AppBundle\Form\Type\AuthorType;
 
 //use Symfony\Component\Form\FormView;
+
+
+use Zend\Form\Element;
+use Zend\Form\Fieldset;
+use Zend\Form\Form;
+use Zend\InputFilter\Input;
+use Zend\InputFilter\InputFilter;
 
 class AuthorController extends FOSRestController
 {
@@ -76,7 +81,7 @@ class AuthorController extends FOSRestController
         $paginator = new Paginator();
         $paginator
             ->setTotalItemCount($count)
-            ->setItemCountPerPage(2)
+            //->setItemCountPerPage(2)
             ->setCurrentPageNumber($page);
 
         $authors = $repo->findBy(
@@ -208,7 +213,7 @@ class AuthorController extends FOSRestController
     {
         $repo = $this->getDoctrine()
             ->getManager()
-            ->getRepository('MichaelAppBundle:auhor');
+            ->getRepository('MichaelAppBundle:author');
 
         $entity = $repo->find($id);
 
@@ -353,4 +358,25 @@ class AuthorController extends FOSRestController
         $em->remove($entity);
         $em->flush();
     }
+
+    /**
+     * @Route(
+     *      "/authors/{id}",
+     *      name = "app.route.author.options",
+     *      defaults = {
+     *          "_format" = "json",
+     *          "id" = ""
+     *      },
+     *      requirements = {
+     *          "_method" = "OPTIONS",
+     *          "id" = "\d+"
+     *      })
+     * @Rest\View(statusCode=200)
+     */
+    public function optionsAction($id)
+    {
+        
+    }
+
+
 }

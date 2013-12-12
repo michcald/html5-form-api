@@ -30,16 +30,6 @@ class Article
      *
      * @ORM\Column(name="title", type="string", length=255)
      * @Assert\NotBlank
-     *
-     * @FormElement(
-     *      type = "text",
-     *      label = "Title",
-     *      required = true,
-     *      attributes = {
-     *          "max-length" = "10",
-     *          "min-length" = "2"
-     *      }
-     * )
      */
     private $title;
 
@@ -47,14 +37,6 @@ class Article
      * @var string
      *
      * @ORM\Column(name="text", type="text", nullable=true)
-     *
-     * @FormElement(
-     *      type = "textarea",
-     *      label = "Text",
-     *      attributes = {
-     *          "max-length" = "10"
-     *      }
-     * )
      */
     private $text;
 
@@ -63,11 +45,6 @@ class Article
      *
      * @ORM\Column(name="date", type="datetime", nullable=false)
      * @Assert\DateTime
-     *
-     * @FormElement(
-     *      type = "datetime",
-     *      label = "Date"
-     * )
      */
     private $date;
 
@@ -76,11 +53,6 @@ class Article
      *
      * @ORM\Column(name="published", type="boolean")
      * @Assert\Type(type="bool")
-     *
-     * @FormElement(
-     *      type = "trigger",
-     *      label = "Is published"
-     * )
      */
     private $published;
 
@@ -90,15 +62,6 @@ class Article
      * @ORM\Column(name="views", type="integer")
      * @Assert\NotBlank
      * @Assert\Type(type="integer")
-     *
-     * @FormElement(
-     *      type = "integer",
-     *      label = "Views",
-     *      attributes = {
-     *          "max" = "1000",
-     *          "min" = "0"
-     *      }
-     * )
      */
     private $views;
 
@@ -107,14 +70,6 @@ class Article
      *
      * @ORM\Column(name="price", type="float", nullable=true)
      * @Assert\Type(type="double")
-     *
-     * @FormElement(
-     *      type = "money",
-     *      label = "Insert the price",
-     *      attributes = {
-     *          "min" = "0"
-     *      }
-     * )
      */
     private $price;
 
